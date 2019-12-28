@@ -1,9 +1,8 @@
 <?php
-$input=file_get_contents('http://wollmilchsau.in/puzzle/input.1.txt');
-
+  include "input.php";
   $start_time = microtime(true); 
   $input=(string) $input;
-  $arr=explode("\n",$input);
+  $arr=explode(",",$input);
   $babCount=0;
   $delimeter='@@$$@@';
   foreach($arr as $key=>$thisVal){
@@ -23,7 +22,7 @@ $input=file_get_contents('http://wollmilchsau.in/puzzle/input.1.txt');
 		$cleanArr['outside_str']=$thisVal; //no square brackets
 	}
 
-		$isBaab=subString($cleanArr);
+		$isBaab=checkSubString($cleanArr);
 		if(!empty($isBaab) && $isBaab!==false){
 			$babCount++;
 	}
@@ -31,38 +30,38 @@ $input=file_get_contents('http://wollmilchsau.in/puzzle/input.1.txt');
   }
   $end_time = microtime(true); 
   $execution_time = ($end_time - $start_time);   
-  echo "Total Baab Strings found ".$babCount."<br>";
+  echo "Total valid Unique Ids found ".$babCount."<br>";
   echo " Execution time = ".round($execution_time,2)." sec"; 
 ?>
 <?php
 
-   function checkBaab($str='') {
+   function validateBaab($str='') {
     $first_half=substr($str,0,2);
 	$second_half=strrev(substr($str,-2));
 	return $first_half===$second_half;
 	}
  
-  function subString($strArr)  
+  function checkSubString($strArr)  
 { 
 	//check if square bracket enclosed strings contains a baab
 	$inside_str=isset($strArr['inside_str'])?$strArr['inside_str']:[];
 	$outside_str=$strArr['outside_str'];
 	$isBaabWithinBrackets=false;
 	if(!empty($inside_str)){
-		$insideBaabStr=checkBaabString($inside_str);
+		$insideBaabStr=checkBaab($inside_str);
 		$isBaabWithinBrackets=!empty($insideBaabStr)?true:false;
 		if($isBaabWithinBrackets===true){return false;} //returnig if square bracket contains baab
 	}
 	
 	if(!empty($outside_str)){
-		$isoutsideBaabStr=checkBaabString($outside_str);
+		$isoutsideBaabStr=checkBaab($outside_str);
 		$isBaabOutside=!empty($isoutsideBaabStr)?true:false;
 		return $isBaabOutside;
 
 	}
 
 }
-function checkBaabString($strArr){
+function checkBaab($strArr){
 	$isBaab=false;
 	foreach($strArr as $str){
 	
@@ -89,7 +88,7 @@ function checkBaabString($strArr){
 
 				//secho 'naman<br>';
 	
-				if(!empty($sub) && checkBaab($sub)===true){  
+				if(!empty($sub) && validateBaab($sub)===true){  
 					return true;
 				}
 			}             
