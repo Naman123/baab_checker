@@ -9,11 +9,7 @@ foreach ($arr as $key => $thisVal)
 {
     $cleanArr = [];
     $enclosedStrings = [];
-    if (preg_match_all("/\[([^\]]*)\]/", $thisVal, $matches))
-    {
-        $enclosedStrings = $matches[1];
-        $cleanArr['inside_str'] = $enclosedStrings;
-    }
+    
 
     $cleanStr = preg_replace('~\[.*\]~', $delimeter, $thisVal);
     $pos = strpos($cleanStr, $delimeter);
@@ -25,10 +21,11 @@ foreach ($arr as $key => $thisVal)
     {
         $cleanArr['outside_str'] = $thisVal; //no square brackets
         
-    }
+	}
+	
 
-    $isBaab = checkSubString($cleanArr);
-    if (!empty($isBaab) && $isBaab !== false)
+    $isBaab = checkBaab([$thisVal]);
+    if ($isBaab === true)
     {
         $babCount++;
     }
@@ -46,37 +43,15 @@ function validateBaab($str = '')
     return $first_half === $second_half;
 }
 
-function checkSubString($strArr)
-{
-    //check if square bracket enclosed strings contains a baab
-    $inside_str = isset($strArr['inside_str']) ? $strArr['inside_str'] : [];
-    $outside_str = $strArr['outside_str'];
-    $isBaabWithinBrackets = false;
-    if (!empty($inside_str))
-    {
-        $insideBaabStr = checkBaab($inside_str);
-        $isBaabWithinBrackets = !empty($insideBaabStr) ? true : false;
-        if ($isBaabWithinBrackets === true)
-        {
-            return false;
-        } //returnig if square bracket contains baab
-        
-    }
-
-    if (!empty($outside_str))
-    {
-        $isoutsideBaabStr = checkBaab($outside_str);
-        $isBaabOutside = !empty($isoutsideBaabStr) ? true : false;
-        return $isBaabOutside;
-
-    }
-
-}
 function checkBaab($strArr)
 {
     $isBaab = false;
     foreach ($strArr as $str)
     {
+		if (preg_match_all("/\[([^\]]*)\]/", $str, $matches))
+    {
+		if(checkBaab($matches[1])===true){return $isBaab;}  //return false if baab is enclosed within square brackets
+	}
 
         $n = strlen($str);
         for ($len = 1;$len <= $n;$len++)
@@ -89,7 +64,6 @@ function checkBaab($strArr)
 
                 if ($subLength < 4 || $subLength > 4)
                 {
-                    //echo 'kaushik<br>';
                     continue; //escaping loop in case string length don't match baab length i.e. 4
                     
                 }
@@ -99,8 +73,6 @@ function checkBaab($strArr)
                 {
                     $sub .= $str[$k];
                 }
-                //echo 'counter'.$i."==".$j."==".$sub."<br>";
-                //secho 'naman<br>';
                 if (!empty($sub) && validateBaab($sub) === true)
                 {
                     return true;
