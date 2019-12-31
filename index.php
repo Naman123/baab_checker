@@ -31,13 +31,14 @@ foreach ($arr as $key => $thisVal)
     }
 
 }
-echo "Total Valid Unique Ids found " . $babCount . "<br>";
+echo "Total supported Unique Ids found " . $babCount . "<br>";
 
 function validateBaab($str = '')
 {
     $first_half = substr($str, 0, 2);
-    $second_half = strrev(substr($str, -2));
-    return $first_half === $second_half;
+    $second_half_rev = strrev(substr($str, -2));
+    $second_half = substr($str, -2);
+    return $first_half === $second_half_rev &&  $first_half!==$second_half;
 }
 
 function checkBaab($strArr)
