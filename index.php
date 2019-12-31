@@ -31,10 +31,7 @@ foreach ($arr as $key => $thisVal)
     }
 
 }
-$end_time = microtime(true);
-$execution_time = ($end_time - $start_time);
 echo "Total Valid Unique Ids found " . $babCount . "<br>";
-echo " Execution time = " . round($execution_time, 2) . " sec";
 
 function validateBaab($str = '')
 {
